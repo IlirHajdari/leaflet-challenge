@@ -57,10 +57,18 @@ defaultMap.addTo(myMap);
 //grayscale.addTo(myMap);
 
 // add the layer control
-L.control.layers(basemaps).addTo(myMap);
+//L.control.layers(basemaps).addTo(myMap);
 
 // create var to hold earthquake data
 let earthquake = new L.LayerGroup();
+
+// define overlays object
+let overlays = {
+  Earthquake: earthquake,
+};
+
+// add the layer control with both base maps and overlays
+L.control.layers(basemaps, overlays).addTo(myMap);
 
 // get the data for the quakes and populate the layergroup
 // call the USGS GeoJson API
@@ -69,4 +77,57 @@ d3.json(
 ).then(function (earthquakeData) {
   // console log to make sure the data is coming in
   console.log(earthquakeData);
+  // plot circles, where the radius is dependent on the magnitude
+  // and the color is dependent on the depth
+
+  // make a function that chooses the color of the data point
+  function dataColor(depth) {
+    if (depth > 90) {
+      return "red";
+    } else if (depth > 70) {
+      return "orangered";
+    } else if (depth > 50) {
+      return "orange";
+    } else if (depth > 30) {
+      return "gold";
+    } else if (depth > 10) {
+      return "yellow";
+    } else {
+      return "green";
+    }
+  }
+
+  // make a function that determines the size of the radius
+  function radiusSize(mag) {
+    if (mag == 0) {
+      return 1; // makes sure that a 0 mag earthquake shows on the map
+    } else {
+      return mag * 5; // makes the radius 5 times the magnitude
+    }
+  }
+
+  // add on to the style for each data point
+  function dataStyle(feature) {
+    return {
+      opacity: 1,
+      fillOpacity: 1,
+      fillColor: dataColor(feature.geometry.coordinates[2]), // use index 2 for the depth
+      color: "#000000", // black
+      radius: radiusSize(feature.properties.mag),
+      stroke: true,
+      weight: 0.5,
+    };
+  }
+
+  // add the GeoJson data
+  L.geoJson(earthquakeData, {
+    // make each feature a marker that is on the map
+    // each marker is going to be a circle
+    pointToLayer: function (feature, latLng) {
+      return L.circleMarker(latLng);
+    },
+    // set the style for each marker
+    style: dataStyle, // calls the data style function and passes in the earthquake data
+    // add popups
+  }).addTo(earthquake);
 });
