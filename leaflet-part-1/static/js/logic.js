@@ -48,7 +48,7 @@ let basemaps = {
 // make a map object
 let myMap = L.map("map", {
   center: [36.7783, -119.4179],
-  zoom: 3,
+  zoom: 5,
   layers: [defaultMap, grayscale, WorldImagery, NatGeoWorldMap],
 });
 
@@ -129,5 +129,10 @@ d3.json(
     // set the style for each marker
     style: dataStyle, // calls the data style function and passes in the earthquake data
     // add popups
+    onEachFeature: function (feature, layer) {
+      layer.bindPopup(`Magnitude: <b>${feature.properties.mag}</b><br>
+                      Depth: <b>${feature.geometry.coordinates[2]}</b><br>
+                      Location: <b>${feature.properties.place}</b>`);
+    },
   }).addTo(earthquake);
 });
