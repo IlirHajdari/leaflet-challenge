@@ -70,6 +70,33 @@ let overlays = {
 // add the layer control with both base maps and overlays
 L.control.layers(basemaps, overlays).addTo(myMap);
 
+// add the legend to the map
+let legend = L.control({
+  position: "bottomright",
+});
+
+// add the properties for the legend
+legend.onAdd = function () {
+  // make a div for the legend to appear on the page
+  let div = L.DomUtil.create("div", "info legend");
+  // set up the intervals
+  let intervals = [-10, 10, 30, 50, 70, 90];
+  // set up the colors
+  let colors = ["green", "yellow", "gold", "orange", "orangered", "red"];
+  // loop through the intervals and generate a label with a colored square for each interval
+  for (let i = 0; i < intervals.length; i++) {
+    div.innerHTML +=
+      "<i style='background: " +
+      colors[i] +
+      "'></i> " +
+      intervals[i] +
+      (intervals[i + 1] ? "&ndash;" + intervals[i + 1] + "<br>" : "+");
+  }
+
+  return div;
+};
+
+legend.addTo(myMap);
 // get the data for the quakes and populate the layergroup
 // call the USGS GeoJson API
 d3.json(
