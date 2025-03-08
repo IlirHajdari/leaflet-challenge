@@ -58,3 +58,15 @@ defaultMap.addTo(myMap);
 
 // add the layer control
 L.control.layers(basemaps).addTo(myMap);
+
+// create var to hold earthquake data
+let earthquake = new L.LayerGroup();
+
+// get the data for the quakes and populate the layergroup
+// call the USGS GeoJson API
+d3.json(
+  "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
+).then(function (earthquakeData) {
+  // console log to make sure the data is coming in
+  console.log(earthquakeData);
+});
