@@ -44,7 +44,7 @@ A **legend** and interactive elements enhance the usability of the map.
 
 The completed earthquake visualization was deployed using **GitHub Pages**.
 You can view the live map here:  
-[Live Earthquake Map]
+[Live Earthquake Map](https://ilirhajdari.github.io/leaflet-challenge/)
 
 ## Requirements
 
